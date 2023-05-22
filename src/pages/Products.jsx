@@ -7,58 +7,111 @@ import {
   Button,
   CardActionArea,
   CardActions,
+  CircularProgress,
 } from "@mui/material";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import axios from "axios";
-import React from "react";
+import React, { useContext } from "react";
+import { BasketContext } from "../contexts/BasketContext";
 
 function Products() {
-  const { error, isLoading, data, refetch } = useQuery(["Products"], () => {
+  const { basket, setbasket } = useContext(BasketContext);
+
+  const { error, isLoading, data } = useQuery(["Products"], () => {
     return axios.get("https://fakestoreapi.com/products");
-  },
-  {
-    staleTime:10000
   });
   console.log(data);
+  const addToBasket = (product) => {
+    setbasket((arr) => [...arr, product]);
+  };
+
+  const isInBasket = (product) => {
+    return basket.includes(product);
+  };
+
+  const removeProduct = (product) => {
+    const removedBasket = basket.filter(item=>(
+      item.id !== product.id
+    ))
+    setbasket(removedBasket)
+  }
+
   return (
     <Box
       sx={{
         display: "flex",
-        flexWrap:"wrap",
-        width:"100%",
+        flexWrap: "wrap",
+        width: "100%",
+        backgroundColor:"orange",
+        height:"100vh"
       }}
     >
+      {error && (
+        <h1 style={{ color: "red" }}>
+          Data can not be fetched. Please refresh the page
+        </h1>
+      )}
+
+      {isLoading && (
+        <Box sx={{ display: "flex" }}>
+          <CircularProgress />
+        </Box>
+      )}
       {data &&
         data?.data?.map((product) => (
-          <Card sx={{ maxWidth: 345 ,
-          width:500,
-          margin:2,
-          position:"relative"}}>
-            <CardActionArea >
+          <Card
+            sx={{ maxWidth: 345, width: 500, margin: 2, position: "relative" }}
+          >
+            <CardActionArea>
               <CardMedia
                 component="img"
                 height="140"
                 image={product.image}
                 alt="green iguana"
-                sx={{  objectFit: "contain" }}
+                sx={{ objectFit: "contain" }}
               />
               <CardContent>
-                <Typography gutterBottom variant="h5" component="div" style={{fontSize:18}}>
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  style={{ fontSize: 18 }}
+                >
                   {product.title}
                 </Typography>
-                <Typography variant="body2" color="purple" style={{fontSize:12}}>
-                  {product.price}
+                <Typography
+                  variant="body2"
+                  color="purple"
+                  style={{ fontSize: 14, fontWeight: 700 }}
+                >
+                  {product.price}$
                 </Typography>
               </CardContent>
             </CardActionArea>
-            <CardActions sx={{position:"absolute",
-          bottom:2,
-          right:2}}>
-              <Button size="small" color="primary" variant="outlined">
-                Add to basket
-              </Button>
-            </CardActions>
+            {isInBasket(product) ? (
+              <CardActions sx={{ position: "absolute", bottom: 2, right: 2 }}>
+                <Button
+                  size="small"
+                  color="error"
+                  variant="outlined"
+                  onClick={() => removeProduct(product)}
+                >
+                  Remove from basket
+                </Button>
+              </CardActions>
+            ) : (
+              <CardActions sx={{ position: "absolute", bottom: 2, right: 2 }}>
+                <Button
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                  onClick={() => addToBasket(product)}
+                >
+                  Add to basket
+                </Button>
+              </CardActions>
+            )}
           </Card>
         ))}
     </Box>

@@ -7,15 +7,32 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { useNavigate } from "react-router-dom";
 
 export default function SignIn() {
+  const navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+      email: data?.get("email"),
+      password: data?.get("password"),
+
     });
+    const storedUserData = localStorage.getItem(`${data?.get("email")}`);
+    const userData = storedUserData ? JSON.parse(storedUserData) : null;
+    console.log(userData?.email);
+    console.log(data?.get("email"));
+    if (storedUserData && userData.email === data.get("email") && userData.password === data.get("password")) {
+      console.log("Login successful");
+      navigate("/adminPanel")
+    } else {
+      console.log("Invalid login credentials");
+    }
+
+
+
   };
 
   return (

@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -25,13 +26,24 @@ const Signup = () => {
     password: "",
   });
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData); 
+    localStorage.setItem(`${formData.email}`, JSON.stringify(formData));
+    console.log(localStorage.getItem(`${formData.email}`));
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+    });
+    navigate("/products")
+  
   };
 
   return (
