@@ -16,26 +16,14 @@ import React, { useContext } from "react";
 import { BasketContext } from "../contexts/BasketContext";
 
 function Products() {
-  const { basket, setbasket } = useContext(BasketContext);
+  const { isInBasket, handleAddRemove } = useContext(BasketContext);
 
   const { error, isLoading, data } = useQuery(["Products"], () => {
     return axios.get("https://fakestoreapi.com/products");
   });
   console.log(data);
-  const addToBasket = (product) => {
-    setbasket((arr) => [...arr, product]);
-  };
 
-  const isInBasket = (product) => {
-    return basket.includes(product);
-  };
-
-  const removeProduct = (product) => {
-    const removedBasket = basket.filter(item=>(
-      item.id !== product.id
-    ))
-    setbasket(removedBasket)
-  }
+  
 
   return (
     <Box
@@ -68,7 +56,7 @@ function Products() {
                 component="img"
                 height="140"
                 image={product.image}
-                alt="green iguana"
+                alt="product image"
                 sx={{ objectFit: "contain" }}
               />
               <CardContent>
@@ -89,13 +77,13 @@ function Products() {
                 </Typography>
               </CardContent>
             </CardActionArea>
-            {isInBasket(product) ? (
+            {isInBasket(product.id) ? (
               <CardActions sx={{ position: "absolute", bottom: 2, right: 2 }}>
                 <Button
                   size="small"
                   color="error"
                   variant="outlined"
-                  onClick={() => removeProduct(product)}
+                  onClick={() => handleAddRemove(product)}
                 >
                   Remove from basket
                 </Button>
@@ -106,7 +94,7 @@ function Products() {
                   size="small"
                   color="primary"
                   variant="outlined"
-                  onClick={() => addToBasket(product)}
+                  onClick={() => handleAddRemove(product)}
                 >
                   Add to basket
                 </Button>

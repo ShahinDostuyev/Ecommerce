@@ -1,100 +1,57 @@
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { useNavigate } from "react-router-dom";
-
-export default function SignIn() {
-  const navigate = useNavigate();
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data?.get("email"),
-      password: data?.get("password"),
-
-    });
-    const storedUserData = localStorage.getItem(`${data?.get("email")}`);
-    const userData = storedUserData ? JSON.parse(storedUserData) : null;
-    console.log(userData?.email);
-    console.log(data?.get("email"));
-    if (storedUserData && userData.email === data.get("email") && userData.password === data.get("password")) {
-      console.log("Login successful");
-      navigate("/adminPanel")
-    } else {
-      console.log("Invalid login credentials");
-    }
+import React, { useContext } from 'react';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import './Login.css';
+import { SignContext } from '../contexts/SignContext';
+const Login = () => {
+  const { setloggedIn,isValidForLogin } = useContext(SignContext);
 
 
+  const initialValues = {
+    email: "",
+    password: "",
+  };
 
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    password: Yup.string().required("Password is required"),
+  });
+
+  const handleSubmit = (values, { setSubmitting }) => {
+    setTimeout(() => {
+      if(isValidForLogin(values.email,values.password)){
+        setloggedIn(true)
+        alert('Login successful!');
+        setSubmitting(false);
+      }
+    }, 500);
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{  
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
+    <div className="container">
+      <h1>Login</h1>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
       >
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Sign In
-          </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
-        </Box>
-      </Box>
-    </Container>
+        <Form className="form">
+        
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <Field type="email" name="email" id="email" className="input-field" />
+            <ErrorMessage name="email" component="div" className="error" />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <Field type="password" name="password" id="password" className="input-field" />
+            <ErrorMessage name="password" component="div" className="error" />
+          </div>
+          <button type="submit" className="submit-btn">Sign in</button>
+        </Form>
+      </Formik>
+    </div>
   );
-}
+};
+
+export default Login;

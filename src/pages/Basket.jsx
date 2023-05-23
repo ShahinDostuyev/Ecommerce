@@ -6,12 +6,9 @@ import Typography from "@mui/material/Typography";
 import { Box, Button, CardActionArea, CardActions } from "@mui/material";
 import { BasketContext } from "../contexts/BasketContext";
 function Basket() {
-  const { basket, setbasket } = useContext(BasketContext);
+  const { basket, setbasket,handleAddRemove } = useContext(BasketContext);
   console.log("Basket: ", basket);
-  const removeProduct = (product) => {
-    const removedBasket = basket.filter((item) => item.id !== product.id);
-    setbasket(removedBasket);
-  };
+ 
   return (
     <div style={{backgroundColor:"orange",height:"100vh"}}>
       <h1>Basket page</h1>
@@ -63,7 +60,7 @@ function Basket() {
                   size="small"
                   color="error"
                   variant="outlined"
-                  onClick={() => removeProduct(product)}
+                  onClick={() => handleAddRemove(product)}
                 >
                   Remove from basket
                 </Button>

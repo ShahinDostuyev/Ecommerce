@@ -7,11 +7,11 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import { BasketContext } from "../contexts/BasketContext";
-
+import { SignContext } from "../contexts/SignContext";
 
 function ResponsiveAppBar() {
-  const {basket,setbasket} = React.useContext(BasketContext);
-
+  const { basket } = React.useContext(BasketContext);
+  const { setloggedIn, loggedIn } = React.useContext(SignContext);
 
   return (
     <AppBar
@@ -60,28 +60,53 @@ function ResponsiveAppBar() {
                 to="/basket"
                 style={{ textDecoration: "none", color: "white" }}
               >
-                Basket {basket.length>0 ? `(${basket.length})` : ""}
+                Basket {basket.length > 0 ? `(${basket.length})` : ""}
               </Link>
             </Button>
           </Box>
-          <Box sx={{display:"flex"}}>
-            <Button
-              key="Login"
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              <Link
-                to="/login"
-                style={{ textDecoration: "none", color: "white" }}
-              >
-                Login
-              </Link>
-            </Button>
-            <Button
-                key="Register"
+          <Box sx={{ display: "flex" }}>
+            {loggedIn ? (
+              <>
+              <Button
+                onClick={() => {
+                  setloggedIn(false);
+                }}
+                key="Log out"
                 sx={{ my: 2, color: "white", display: "block" }}
               >
-                <Link to="/register" style={{textDecoration:"none",color:"white"}}>Register</Link>
-              </Button>
+                <Link
+                  to="/products"
+                  style={{ textDecoration: "none", color: "white" }}
+                >
+                  Log out
+                </Link>
+              </Button></>
+            ) : (
+              <>
+                <Button
+                  key="Login"
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  <Link
+                    to="/login"
+                    style={{ textDecoration: "none", color: "white" }}
+                  >
+                    Login
+                  </Link>
+                </Button>
+                <Button
+                  key="Register"
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  <Link
+                    to="/register"
+                    style={{ textDecoration: "none", color: "white" }}
+                  >
+                    Register
+                  </Link>
+                </Button>
+              </>
+            )}
           </Box>
         </Toolbar>
       </Container>
