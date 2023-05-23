@@ -6,7 +6,7 @@ export const SignContextProvider = ({ children }) => {
   let initialSignData = JSON.parse(localStorage.getItem("Users"));
 
   const [users, setusers] = useState(initialSignData ?? []);
-  const [loggedIn, setloggedIn] = useState(false);
+  const [loggedIn, setloggedIn] = useState(JSON.parse(localStorage.getItem("loggedIn")));
   console.log(users);
 
   useEffect(() => {

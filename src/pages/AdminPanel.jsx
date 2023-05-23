@@ -80,7 +80,6 @@ function AdminPanel() {
     { field: "price", headerName: "Price", width: 100 },
     { field: "category", headerName: "Category", width: 150 },
     { field: "rating", headerName: "Rating", width: 100, valueFormatter: ({ value }) => value.rate },
-
     {
       field: "delete",
       headerName: "Delete",

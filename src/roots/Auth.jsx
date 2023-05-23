@@ -1,9 +1,25 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
+
 import { SignContext } from "../contexts/SignContext";
+import Login from "../sign/Login";
+import Products from "../pages/Products";
 
-function Auth({ children }) {
+
+export const Auth = ({ element, isAuthProtected, path }) => {
   const { loggedIn } = useContext(SignContext);
-  return <></>;
-}
-
-export default Auth;
+  return isAuthProtected ? (
+    loggedIn ? (
+        element
+    ) : (
+      <Login/>
+    )
+  ) : loggedIn ? (
+    path !== "/login"&&path!=="/register"? (
+        element
+    ) : (
+      <Products/>
+    )
+  ) : (
+    element
+  );
+};
